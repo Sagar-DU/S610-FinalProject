@@ -1,12 +1,17 @@
 # Packages must be installed and loaded into R
-install.packages("BayesBrainMap")
-install.packages("ciftiTools") 
-library(BayesBrainMap)
+# remove.packages("BayesBrainMap")
+install.packages("devtools")
+devtools::install_github("mandymejia/fMRItools", "7.0")
+devtools::install_github("mandymejia/BayesBrainMap", "2.0")
+#install.packages("BayesBrainMap")
+#install.packages("ciftiTools")
+library(fMRItools)
 library(ciftiTools)
+library(BayesBrainMap)
 
 # Set CIFTI Workbench path (download from https://www.humanconnectome.org/software/connectome-workbench)
-wb_path <- "~/Downloads/workbench" # path to where you downloaded it
-ciftiTools.setOption("wb_path", wb_path) 
+wb_path <- "C:/Program Files/workbench" # path to where you downloaded it
+ciftiTools.setOption("wb_path", wb_path)
 
 # Main function is BrainMap
 # Most important parameters are BOLD, prior, and TR
@@ -22,8 +27,8 @@ ciftiTools.setOption("wb_path", wb_path)
 # TR = 0.72 for HCP data
 
 # Example function call:
-BOLD <- "~/Desktop/rfMRI_REST1_LR_Atlas_MSMAll_hp2000_clean.dtseries.nii"
-prior <- "~/Desktop/prior_combined_Yeo17_noGSR.rds"
+BOLD <- "./sample-data/rfMRI_REST2_LR_Atlas_MSMAll_hp2000_clean.dtseries.nii"
+prior <- "./sample-data/prior/prior_combined_GICA15_GSR.rds"
 bMap <- BrainMap(
   BOLD = BOLD, # path to BOLD data
   prior = prior, # path to prior
