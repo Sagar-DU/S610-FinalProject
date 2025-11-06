@@ -1,16 +1,15 @@
 # Packages must be installed and loaded into R
-# remove.packages("BayesBrainMap")
-install.packages("devtools")
-devtools::install_github("mandymejia/fMRItools", "7.0")
-devtools::install_github("mandymejia/BayesBrainMap", "2.0")
-#install.packages("BayesBrainMap")
+#install.packages("devtools")
+#devtools::install_github("mandymejia/fMRItools", "7.0")
+#devtools::install_github("mandymejia/BayesBrainMap", "2.0")
 #install.packages("ciftiTools")
+#install.packages("BayesBrainMap")
 library(fMRItools)
 library(ciftiTools)
 library(BayesBrainMap)
 
 # Set CIFTI Workbench path (download from https://www.humanconnectome.org/software/connectome-workbench)
-wb_path <- "C:/Program Files/workbench" # path to where you downloaded it
+wb_path <- "./workbench" # path to where you downloaded it
 ciftiTools.setOption("wb_path", wb_path)
 
 # Main function is BrainMap
