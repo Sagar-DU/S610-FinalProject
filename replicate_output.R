@@ -121,7 +121,7 @@ Sigma_ok <- compare_matrix(
   "Estep$Sigma_s_v"
 )
 
-miu_s_ok <- compare_matrix(s
+miu_s_ok <- compare_matrix(
   out$Estep$miu_s,
   out2$Estep$miu_s,
   "Estep$miu_s"
