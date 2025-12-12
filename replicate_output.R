@@ -3,6 +3,7 @@
 #install.packages("RcppArmadillo")
 library(Rcpp)
 library(RcppArmadillo)
+library(microbenchmark)
 
 # compile
 # ---------------------------
@@ -29,6 +30,7 @@ C_diag <- runif(nT, 0.5, 2)
 H <- NULL
 Hinv <- NULL
 
+source("UpdateTheta_BrainMap.independent.R")
 out <- UpdateTheta_BrainMap.independent(
   prior_mean = prior_mean,
   prior_var  = prior_var,
@@ -43,7 +45,7 @@ out <- UpdateTheta_BrainMap.independent(
 )
 out
 
-Rcpp::sourceCpp("/N/slate/nsagar/S610-FinalProject/updateTheta_BrainMap_independent.cpp")
+Rcpp::sourceCpp("updateTheta_BrainMap_independent.cpp")
 
 out2 <- UpdateTheta_BrainMap_independent_cpp(
   prior_mean = prior_mean,
@@ -58,5 +60,3 @@ out2 <- UpdateTheta_BrainMap_independent_cpp(
   verbose = TRUE
 )
 out2
-
-
