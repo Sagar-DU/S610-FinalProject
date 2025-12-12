@@ -90,13 +90,13 @@ List UpdateTheta_BrainMap_independent_cpp(
   
   // scale function: center columns, divide by column sds (matching R's scale())
   auto scale_columns = [&](arma::mat& M) {
-    int nc = M.n_cols;
-    for (int j = 0; j < nc; ++j) {
+    for (arma::uword j = 0; j < M.n_cols; ++j) {
       arma::colvec col = M.col(j);
-      double m = arma::mean(col);
-      double s = arma::stddev(col, 1); // sample sd (default Armadillo uses N-1 denom)
-      if (s == 0.0) s = 1.0;
-      M.col(j) = (M.col(j) - m) / s;
+      double mean_col = arma::mean(col);
+      arma::colvec centered = col - mean_col;
+      double sd_col = std::sqrt( arma::accu(centered % centered) / (col.n_elem - 1) );
+      if (sd_col == 0.0) sd_col = 1.0;
+      M.col(j) = centered / sd_col;
     }
   };
   

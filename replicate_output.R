@@ -8,9 +8,9 @@ library(RcppArmadillo)
 # ---------------------------
 # Dimensions for test example
 # ---------------------------
-nV <- 50   # number of voxels
-nL <- 30   # number of latent components
-nT <- 40   # number of time points
+nV <- 5   # number of voxels
+nL <- 3   # number of latent components
+nT <- 4   # number of time points
 
 
 prior_mean <- matrix(rnorm(nV * nL), nV, nL)
@@ -59,3 +59,25 @@ out2 <- UpdateTheta_BrainMap_independent_cpp(
   verbose = TRUE
 )
 out2
+
+## -------------------------------
+## Numerical comparison
+## -------------------------------
+
+# Difference in nu0_sq
+nu0_sq_diff <- out2$nu0_sq - out$nu0_sq
+
+# Difference matrix for A
+A_diff <- out2$A - out$A
+
+# Frobenius norm of difference in A
+frobenius_norm_A <- sqrt(sum(A_diff^2))
+
+# Maximum absolute difference in A
+max_abs_diff_A <- max(abs(A_diff))
+
+# Print results
+cat("Difference in nu0_sq (C++ - R):", nu0_sq_diff, "\n")
+cat("Frobenius norm of A difference:", frobenius_norm_A, "\n")
+cat("Max absolute entrywise difference in A:", max_abs_diff_A, "\n")
+
