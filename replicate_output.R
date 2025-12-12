@@ -3,15 +3,14 @@
 #install.packages("RcppArmadillo")
 library(Rcpp)
 library(RcppArmadillo)
-library(microbenchmark)
 
 # compile
 # ---------------------------
 # Dimensions for test example
 # ---------------------------
-nV <- 5   # number of voxels
-nL <- 3   # number of latent components
-nT <- 4   # number of time points
+nV <- 50   # number of voxels
+nL <- 30   # number of latent components
+nT <- 40   # number of time points
 
 
 prior_mean <- matrix(rnorm(nV * nL), nV, nL)
