@@ -60,24 +60,103 @@ out2 <- UpdateTheta_BrainMap_independent_cpp(
 )
 out2
 
-## -------------------------------
-## Numerical comparison
-## -------------------------------
+## =========================================================
+## Validation tests: R vs C++ implementations
+## =========================================================
 
-# Difference in nu0_sq
-nu0_sq_diff <- out2$nu0_sq - out$nu0_sq
+tol <- 1e-8  # numerical tolerance
 
-# Difference matrix for A
-A_diff <- out2$A - out$A
+# Helper function for matrix comparison
+compare_matrix <- function(M1, M2, name) {
+  if (!all(dim(M1) == dim(M2))) {
+    cat(name, ": DIMENSION MISMATCH\n")
+    return(FALSE)
+  }
+  max_diff <- max(abs(M1 - M2))
+  cat(sprintf("%s: max |diff| = %.3e\n", name, max_diff))
+  max_diff < tol
+}
 
-# Frobenius norm of difference in A
-frobenius_norm_A <- sqrt(sum(A_diff^2))
+# Helper function for scalar comparison
+compare_scalar <- function(x1, x2, name) {
+  diff <- abs(x1 - x2)
+  cat(sprintf("%s: |diff| = %.3e\n", name, diff))
+  diff < tol
+}
 
-# Maximum absolute difference in A
-max_abs_diff_A <- max(abs(A_diff))
+# Helper function for 3D array comparison
+compare_array3 <- function(A1, A2, name) {
+  if (!all(dim(A1) == dim(A2))) {
+    cat(name, ": DIMENSION MISMATCH\n")
+    return(FALSE)
+  }
+  max_diff <- max(abs(A1 - A2))
+  cat(sprintf("%s: max |diff| = %.3e\n", name, max_diff))
+  max_diff < tol
+}
 
-# Print results
-cat("Difference in nu0_sq (C++ - R):", nu0_sq_diff, "\n")
-cat("Frobenius norm of A difference:", frobenius_norm_A, "\n")
-cat("Max absolute entrywise difference in A:", max_abs_diff_A, "\n")
+## -------------------------
+## 1. Compare A
+## -------------------------
+A_ok <- compare_matrix(out$A, out2$A, "A")
 
+## -------------------------
+## 2. Compare nu0_sq
+## -------------------------
+nu0_ok <- compare_scalar(out$nu0_sq, out2$nu0_sq, "nu0_sq")
+
+## -------------------------
+## 3. Compare Estep components
+## -------------------------
+
+E_v_inv_ok <- compare_matrix(
+  out$Estep$E_v_inv,
+  out2$Estep$E_v_inv,
+  "Estep$E_v_inv"
+)
+
+Sigma_ok <- compare_matrix(
+  out$Estep$Sigma_s_v,
+  out2$Estep$Sigma_s_v,
+  "Estep$Sigma_s_v"
+)
+
+miu_s_ok <- compare_matrix(s
+  out$Estep$miu_s,
+  out2$Estep$miu_s,
+  "Estep$miu_s"
+)
+
+miu_ssT_ok <- compare_array3(
+  out$Estep$miu_ssT,
+  out2$Estep$miu_ssT,
+  "Estep$miu_ssT"
+)
+
+var_s_ok <- compare_matrix(
+  out$Estep$var_s,
+  out2$Estep$var_s,
+  "Estep$var_s"
+)
+
+## -------------------------
+## 4. Final summary
+## -------------------------
+cat("\n====== SUMMARY ======\n")
+results <- c(
+  A = A_ok,
+  nu0_sq = nu0_ok,
+  E_v_inv = E_v_inv_ok,
+  Sigma_s_v = Sigma_ok,
+  miu_s = miu_s_ok,
+  miu_ssT = miu_ssT_ok,
+  var_s = var_s_ok
+)
+
+print(results)
+
+if (all(results)) {
+  cat("SUCCESS: All outputs match within tolerance.\n")
+} else {
+  cat("WARNING: Some outputs do NOT match.\n")
+}

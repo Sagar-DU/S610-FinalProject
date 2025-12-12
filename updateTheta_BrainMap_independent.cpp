@@ -30,7 +30,7 @@ List UpdateTheta_BrainMap_independent_cpp(
   arma::mat A_part2(nL, nL, fill::zeros);
   
   arma::mat miu_s(nV, nL, fill::zeros);
-  arma::cube miu_ssT(nL, nL, nV, fill::zeros); // slice = miu_ssT_v
+  arma::cube miu_ssT(nV, nL, nL, fill::zeros); // slice = miu_ssT_v
   arma::mat var_s(nV, nL, fill::zeros);
   
   // precompute nu0C_inv, At_nu0Cinv, At_nu0Cinv_A
@@ -59,7 +59,7 @@ List UpdateTheta_BrainMap_independent_cpp(
     // save posterior moments (for M-step of nu0_sq)
     miu_s.row(vv) = miu_s_v.t();
     for (int i = 0; i < nL; ++i) var_s(vv, i) = Sigma_s_v(i, i);
-    miu_ssT.slice(vv) = miu_ssT_v;
+    miu_ssT.subcube(vv, 0, 0, vv, nL - 1, nL - 1) = miu_ssT_v;
     
     // accumulate for A M-step
     A_part1 += y_v.t() * miu_s_v.t(); // (nT x 1) * (1 x nL) -> nT x nL
@@ -132,7 +132,10 @@ List UpdateTheta_BrainMap_independent_cpp(
     // nu0sq_part3 <- sum(diag(At_Cinv_A %*% apply(miu_ssT, 2:3, sum) ))
     // compute sum over v of miu_ssT[v,,] -> nL x nL
     arma::mat sum_miu_ssT(nL, nL, fill::zeros);
-    for (int vv = 0; vv < nV; ++vv) sum_miu_ssT += miu_ssT.slice(vv);
+    for (int vv = 0; vv < nV; ++vv) {
+      sum_miu_ssT += miu_ssT.subcube(vv, 0, 0, vv, nL - 1, nL - 1);
+    }
+    
     double nu0sq_part3 = trace(At_Cinv_A * sum_miu_ssT);
     
     nu0sq_hat = (1.0 / ( (double)nT * (double)nV )) * (nu0sq_part1 - 2.0 * nu0sq_part2 + nu0sq_part3);
