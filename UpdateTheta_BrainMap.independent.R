@@ -111,4 +111,3 @@ UpdateTheta_BrainMap.independent <- function(
 
   return(theta_new)
 }
-print("Done!")

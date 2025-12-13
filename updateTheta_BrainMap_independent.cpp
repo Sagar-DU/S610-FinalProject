@@ -152,4 +152,3 @@ List UpdateTheta_BrainMap_independent_cpp(
   
   return theta_new;
 }
-cout<<"Done!"<<endl;
