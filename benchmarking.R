@@ -32,3 +32,4 @@ microbenchmark(
     verbose = TRUE
   )
 )
+print("Done!")

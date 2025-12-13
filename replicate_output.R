@@ -160,3 +160,4 @@ if (all(results)) {
 } else {
   cat("WARNING: Some outputs do NOT match.\n")
 }
+print("Done!")
