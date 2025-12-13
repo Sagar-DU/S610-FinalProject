@@ -1,8 +1,10 @@
 # install.packages("microbenchmark")
-
 library(microbenchmark)
+library(Rcpp)
 
-source("replicate_output.R")
+source("UpdateTheta_BrainMap.independent.R")
+Rcpp::sourceCpp("updateTheta_BrainMap_independent.cpp")
+
 microbenchmark(
   UpdateTheta_BrainMap.independent(
     prior_mean = prior_mean,
